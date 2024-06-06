@@ -4,16 +4,7 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The Contact App is a user-friendly application designed to manage and organize contacts efficiently. Key features include adding, editing, deleting, and viewing contacts; search functionality; group categorization. The app features a main screen with a contact list and search bar, an add/edit contact screen, and a contact detail screen. It supports CRUD operations through a RESTful API and uses SQLite for data storage. The app can be easily installed and set up, with clear instructions for contributing and extending functionality.
 
 https://github.com/veerapatadia/my_Contacts/assets/150000048/bb849f80-e5a3-4c4d-814e-82aab81316fc
 
