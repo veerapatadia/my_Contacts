@@ -4,7 +4,7 @@ A new Flutter project.
 
 ## Project Description
 
-The Contact App is a user-friendly application designed to manage and organize contacts efficiently. Key features include adding, editing, deleting, and viewing contacts; search functionality; group categorization. The app features a main screen with a contact list and search bar, an add/edit contact screen, and a contact detail screen. It supports CRUD operations through a RESTful API and uses SQLite for data storage. The app can be easily installed and set up, with clear instructions for contributing and extending functionality.
+The Contact App is a user-friendly application designed to manage and organize contacts efficiently. Key features include adding, editing, deleting, and viewing contacts; search functionality; group categorization. The app features a main screen with a contact list and search bar, an add/edit contact screen, and a contact detail screen. The app can be easily installed and set up, with clear instructions for contributing and extending functionality.
 
 https://github.com/veerapatadia/my_Contacts/assets/150000048/bb849f80-e5a3-4c4d-814e-82aab81316fc
 
