@@ -27,23 +27,27 @@ class _home_pageState extends State<home_page> {
         ),
         actions: [
           Switch(
-              value: Provider.of<ThemeProvider>(context).appTheme.isDark,
-              onChanged: (val) {
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .changeTheme(val);
-              }),
+            value: Provider.of<ThemeProvider>(context).isDark,
+            onChanged: (val) {
+              Provider.of<ThemeProvider>(context, listen: false).changeTheme();
+            },
+          ),
           IconButton(
             onPressed: () {
               Provider.of<StepperProvider>(context, listen: false)
-                  .nameController
-                  .clear();
-              Provider.of<StepperProvider>(context, listen: false)
-                  .emailController
-                  .clear();
-              Provider.of<StepperProvider>(context, listen: false)
-                  .contactController
-                  .clear();
-              Provider.of<StepperProvider>(context, listen: false).step = 0;
+                  .clearFields();
+              // Provider.of<StepperProvider>(context, listen: false)
+              //     .nameController
+              //     .clear();
+              // Provider.of<StepperProvider>(context, listen: false)
+              //     .emailController
+              //     .clear();
+              // Provider.of<StepperProvider>(context, listen: false)
+              //     .contactController
+              //     .clear();
+              // Provider.of<imageProvider>(context, listen: false)
+              //     .();
+              // Provider.of<StepperProvider>(context, listen: false).step = 0;
               showDialog(
                   context: context,
                   builder: (context) {
@@ -62,15 +66,21 @@ class _home_pageState extends State<home_page> {
             onPressed: () async {
               final LocalAuthentication auth = LocalAuthentication();
               bool isAuth = await auth.authenticate(
-                  localizedReason:
-                      "Please authenticate to show hidden contacts",
-                  options: AuthenticationOptions());
+                localizedReason: "Please authenticate to show hidden contacts",
+                options: AuthenticationOptions(),
+              );
 
               if (isAuth) {
                 Navigator.of(context).pushNamed('hide_page');
               }
             },
             icon: Icon(Icons.archive_outlined),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('favourite_page');
+            },
+            icon: Icon(Icons.star),
           ),
         ],
       ),
@@ -108,17 +118,16 @@ class _home_pageState extends State<home_page> {
                           builder: (context, imageProvider, _) {
                             return CircleAvatar(
                               radius: 30,
-                              backgroundImage:
-                                  imageProvider.pickImagePath != null
-                                      ? FileImage(
-                                          File(imageProvider.pickImagePath!))
-                                      : null,
-                              child: imageProvider.pickImagePath == null
+                              backgroundImage: contact.imagePath != null
+                                  ? FileImage(File(contact.imagePath!))
+                                  : null,
+                              child: contact.imagePath == null
                                   ? Text(
                                       contact.name[0].toUpperCase(),
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     )
                                   : null,
@@ -215,7 +224,7 @@ class AlertBox extends StatelessWidget {
                           stepperProvider.forwardStep(context);
                         },
                         child:
-                            Text((stepperProvider.step == 2) ? "Save" : "Next"),
+                            Text((stepperProvider.step == 3) ? "Save" : "Next"),
                       ),
                     ),
                     (stepperProvider.step == 0)
@@ -235,6 +244,77 @@ class AlertBox extends StatelessWidget {
               );
             },
             steps: [
+              Step(
+                title: const Text("Profile Photo"),
+                content: Consumer<imageProvider>(
+                  builder: (context, imageProvider, _) {
+                    return Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundImage: stepperProvider.imagePath != null
+                              ? FileImage(File(stepperProvider.imagePath!))
+                              : null,
+                          child: stepperProvider.imagePath == null
+                              ? IconButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text("Pick Image"),
+                                            content: const Text(
+                                                "Choose Image From Gallery or Camera"),
+                                            actions: [
+                                              FloatingActionButton(
+                                                mini: true,
+                                                onPressed: () async {
+                                                  await imageProvider
+                                                      .pickPhoto();
+                                                  if (imageProvider
+                                                          .pickImagePath !=
+                                                      null) {
+                                                    stepperProvider.setImagePath(
+                                                        imageProvider
+                                                            .pickImagePath!);
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                },
+                                                elevation: 3,
+                                                child: const Icon(
+                                                    Icons.camera_alt),
+                                              ),
+                                              FloatingActionButton(
+                                                mini: true,
+                                                onPressed: () async {
+                                                  await imageProvider
+                                                      .pickImage();
+                                                  if (imageProvider
+                                                          .pickImagePath !=
+                                                      null) {
+                                                    stepperProvider.setImagePath(
+                                                        imageProvider
+                                                            .pickImagePath!);
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                },
+                                                elevation: 3,
+                                                child: const Icon(Icons.image),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  icon: const Icon(Icons.camera_alt),
+                                )
+                              : null,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    );
+                  },
+                ),
+              ),
               Step(
                 title: Text("Name"),
                 content: Container(

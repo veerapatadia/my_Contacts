@@ -3,7 +3,6 @@ import 'package:mycontacts/model/contact.dart';
 
 class FavoriteProvider with ChangeNotifier {
   List<Contact> _favoriteContacts = [];
-  bool isFavourite = false;
 
   List<Contact> get favoriteContacts => _favoriteContacts;
 
@@ -18,6 +17,18 @@ class FavoriteProvider with ChangeNotifier {
     if (_favoriteContacts.contains(contact)) {
       _favoriteContacts.remove(contact);
       notifyListeners();
+    }
+  }
+
+  bool isFavorite(Contact contact) {
+    return _favoriteContacts.contains(contact);
+  }
+
+  void toggleFavorite(Contact contact) {
+    if (isFavorite(contact)) {
+      removeFavorite(contact);
+    } else {
+      addFavorite(contact);
     }
   }
 }

@@ -8,18 +8,20 @@ class StepperProvider extends ChangeNotifier {
   TextEditingController nameController = TextEditingController();
   TextEditingController contactController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  String? imagePath;
 
   void forwardStep(BuildContext context) {
-    if (step == 2) {
+    if (step == 3) {
       Contact contact = Contact(
         name: nameController.text,
         contact: contactController.text,
         email: emailController.text,
+        imagePath: imagePath,
       );
       Provider.of<ContactProvider>(context, listen: false).addContact(contact);
       Navigator.pop(context);
     }
-    if (step < 2) {
+    if (step < 3) {
       step++;
     }
     notifyListeners();
@@ -29,6 +31,20 @@ class StepperProvider extends ChangeNotifier {
     if (step > 0) {
       step--;
     }
+    notifyListeners();
+  }
+
+  void clearFields() {
+    nameController.clear();
+    contactController.clear();
+    emailController.clear();
+    imagePath = null;
+    step = 0;
+    notifyListeners();
+  }
+
+  void setImagePath(String path) {
+    imagePath = path;
     notifyListeners();
   }
 }

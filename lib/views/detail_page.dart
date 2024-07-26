@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mycontacts/model/contact.dart';
 import 'package:mycontacts/provider/contact_provider.dart';
 import 'package:mycontacts/provider/favourite_provider.dart';
@@ -12,34 +10,34 @@ import 'package:provider/provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class detail_page extends StatelessWidget {
-  const detail_page({super.key});
+class DetailPage extends StatelessWidget {
+  const DetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     Contact contact = ModalRoute.of(context)!.settings.arguments as Contact;
     return Scaffold(
-      //backgroundColor: Colors.black,
       appBar: AppBar(
-        // backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-          ),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop('/');
+            Navigator.of(context).pop();
           },
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Provider.of<FavoriteProvider>(context, listen: false)
-                  .addFavorite(contact);
+          Consumer<FavoriteProvider>(
+            builder: (context, favoriteProvider, child) {
+              bool isFavorite = favoriteProvider.isFavorite(contact);
+              return IconButton(
+                onPressed: () {
+                  favoriteProvider.toggleFavorite(contact);
+                },
+                icon: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                ),
+              );
             },
-            icon: Icon(
-              Icons.star_border,
-            ),
           ),
           IconButton(
             onPressed: () {
@@ -64,21 +62,15 @@ class detail_page extends StatelessWidget {
                           children: [
                             TextField(
                               controller: provider.nameController,
-                              decoration: InputDecoration(
-                                labelText: "Name",
-                              ),
+                              decoration: InputDecoration(labelText: "Name"),
                             ),
                             TextField(
                               controller: provider.contactController,
-                              decoration: InputDecoration(
-                                labelText: "Contact",
-                              ),
+                              decoration: InputDecoration(labelText: "Contact"),
                             ),
                             TextField(
                               controller: provider.emailController,
-                              decoration: InputDecoration(
-                                labelText: "Email",
-                              ),
+                              decoration: InputDecoration(labelText: "Email"),
                             ),
                           ],
                         );
@@ -98,9 +90,6 @@ class detail_page extends StatelessWidget {
                           contact.name = provider.nameController.text;
                           contact.contact = provider.contactController.text;
                           contact.email = provider.emailController.text;
-
-                          Provider.of<ContactProvider>(context, listen: false)
-                              .updateContact(contact);
                           Navigator.of(context).pop();
                         },
                         child: Text("Save"),
@@ -110,9 +99,7 @@ class detail_page extends StatelessWidget {
                 },
               );
             },
-            icon: Icon(
-              Icons.edit,
-            ),
+            icon: Icon(Icons.edit),
           ),
           Padding(
             padding: EdgeInsets.only(right: 10),
@@ -123,72 +110,33 @@ class detail_page extends StatelessWidget {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', (route) => false);
               },
-              icon: Icon(
-                Icons.delete,
-              ),
+              icon: Icon(Icons.delete),
             ),
           ),
         ],
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             Consumer<imageProvider>(
-              builder: (context, step, _) {
+              builder: (context, imageProvider, _) {
                 return CircleAvatar(
-                    radius: 70,
-                    backgroundImage: (step.pickImagePath != null)
-                        ? FileImage(
-                            File(step.pickImagePath!),
-                          )
-                        : null,
-                    child: IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text(
-                                  "Pick Image",
-                                ),
-                                content: Text(
-                                  "Choose Image From Gallery or Camera",
-                                ),
-                                actions: [
-                                  FloatingActionButton(
-                                    mini: true,
-                                    onPressed: () async {
-                                      await Provider.of<imageProvider>(context,
-                                              listen: false)
-                                          .pickPhoto();
-                                      Navigator.of(context).pop();
-                                    },
-                                    elevation: 3,
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                    ),
-                                  ),
-                                  FloatingActionButton(
-                                    mini: true,
-                                    onPressed: () async {
-                                      await Provider.of<imageProvider>(context,
-                                              listen: false)
-                                          .pickImage();
-                                      Navigator.of(context).pop();
-                                    },
-                                    elevation: 3,
-                                    child: Icon(
-                                      Icons.image,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      icon: Icon(Icons.camera_alt),
-                    ));
+                  radius: 70,
+                  backgroundImage: contact.imagePath != null
+                      ? FileImage(File(contact.imagePath!))
+                      : null,
+                  child: contact.imagePath == null
+                      ? Text(
+                          contact.name[0].toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        )
+                      : null,
+                );
               },
             ),
             SizedBox(height: 16),
@@ -259,7 +207,7 @@ class detail_page extends StatelessWidget {
                     onPressed: () {
                       ShareExtend.share(
                           "Name:${contact.name}\nContact:${contact.contact}",
-                          "Text");
+                          "text");
                     },
                   ),
                 ),

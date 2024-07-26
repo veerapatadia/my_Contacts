@@ -7,6 +7,7 @@ import 'package:mycontacts/provider/image_provider.dart';
 import 'package:mycontacts/provider/search_provider.dart';
 import 'package:mycontacts/provider/stepper_provider.dart';
 import 'package:mycontacts/views/detail_page.dart';
+import 'package:mycontacts/views/favourite_page.dart';
 import 'package:mycontacts/views/hide_page.dart';
 import 'package:mycontacts/views/home_page.dart';
 import 'package:mycontacts/views/search_page.dart';
@@ -37,21 +38,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isDark = false;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: (Provider.of<ThemeProvider>(context).appTheme.isDark)
-          ? ThemeMode.dark
-          : ThemeMode.light,
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (context) => home_page(),
-        'detail_page': (context) => detail_page(),
-        'hide_page': (context) => hide_page(),
-        'search_page': (context) => SearchPage(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/': (context) => home_page(),
+            'detail_page': (context) => DetailPage(),
+            'hide_page': (context) => hide_page(),
+            'search_page': (context) => SearchPage(),
+            'favourite_page': (context) => FavoritePage(),
+          },
+        );
       },
     );
   }
